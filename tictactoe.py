@@ -61,3 +61,22 @@ class Board:
     if len(winning) == self.size:
       return winning
     return None
+  
+  class GUI:
+
+  def __init__(self):
+    self.app = Tk()
+    self.app.title('TicTacToe')
+    self.app.resizable(width=True, height=True)
+    self.board = Board()
+    self.font = Font(family="Helvetica", size=32)
+    self.buttons = {}
+    for x,y in self.board.fields:
+      handler = lambda x=x,y=y: self.move(x,y)
+      button = Button(self.app, command=handler, font=self.font, width=2, height=1)
+      button.grid(row=y, column=x)
+      self.buttons[x,y] = button
+    handler = lambda: self.reset()
+    button = Button(self.app, text='reset', command=handler)
+    button.grid(row=self.board.size+1, column=0, columnspan=self.board.size, sticky="WE")
+    self.update()
