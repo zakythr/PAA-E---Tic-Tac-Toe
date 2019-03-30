@@ -27,6 +27,40 @@ class Board:
     board.fields[x,y] = board.player
     (board.player,board.opponent) = (board.opponent,board.player)
     
+  def __minimax(self, player):
+    if self.won():
+      if player:
+        return (-1,None)
+      else:
+        return (+1,None)
+    elif self.tied():
+      return (0,None)
+    elif player:
+      best = (-2,None)
+      for x,y in self.fields:
+        if self.fields[x,y]==self.empty:
+          value = self.move(x,y).__minimax(not player)[0]       #implementasi BFS player
+          if value>best[0]:
+            best = (value,(x,y))
+      return best
+    else:
+      best = (+2,None)
+      for x,y in self.fields:
+        if self.fields[x,y]==self.empty:                    #implementasi BFS opponent
+          value = self.move(x,y).__minimax(not player)[0]
+          if value<best[0]:
+            best = (value,(x,y))
+      return best
+  
+  def best(self):                           #melooping minimax
+    return self.__minimax(True)[1]      
+  
+  def tied(self):                           #kondisi tidak ada yang menang
+    for (x,y) in self.fields:
+      if self.fields[x,y]==self.empty:
+        return False
+    return True
+  
   def won(self):                    #mengecek kemenangan setiap baris horizontal,vertical,diagonal
     # horizontal
     for y in range(self.size):
